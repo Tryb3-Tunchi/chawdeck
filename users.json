@@ -1,0 +1,48 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "John Doe",
+      "email": "john@example.com",
+      "password": "hashed_password_here",
+      "phone": "+1234567890",
+      "addresses": [
+        {
+          "id": "addr1",
+          "street": "123 Main St",
+          "city": "New York",
+          "zipCode": "10001",
+          "isDefault": true
+        }
+      ],
+      "orders": [
+        {
+          "id": "ord1",
+          "date": "2024-03-15T10:30:00Z",
+          "status": "delivered",
+          "items": [
+            {
+              "id": "b1",
+              "name": "Classic Cheeseburger",
+              "quantity": 2,
+              "price": 12.99
+            }
+          ],
+          "total": 29.97,
+          "deliveryAddress": "123 Main St, New York, 10001",
+          "restaurantId": "1",
+          "paymentMethod": "card",
+          "paymentStatus": "paid"
+        }
+      ]
+    }
+  ],
+  "sessions": [
+    {
+      "id": "sess_123",
+      "userId": "1",
+      "token": "jwt_token_here",
+      "expiresAt": "2024-03-16T10:30:00Z"
+    }
+  ]
+} 

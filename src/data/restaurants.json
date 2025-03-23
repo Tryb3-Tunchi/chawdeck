@@ -1,0 +1,69 @@
+{
+  "restaurants": [
+    {
+      "id": "1",
+      "name": "Burger House",
+      "image": "https://images.unsplash.com/photo-1571091718767-18b5b1457add",
+      "coverImage": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4",
+      "rating": 4.5,
+      "cuisine": "Fast Food",
+      "deliveryTime": "25-35 min",
+      "minOrder": 10,
+      "featured": true,
+      "menu": [
+        {
+          "id": "b1",
+          "name": "Classic Cheeseburger",
+          "description": "Juicy beef patty with cheddar cheese, lettuce, tomato, and special sauce",
+          "price": 12.99,
+          "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd",
+          "category": "Popular"
+        }
+        // ... more menu items
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Dragon Wok",
+      "image": "https://images.unsplash.com/photo-1525755662778-989d0524087e",
+      "coverImage": "https://images.unsplash.com/photo-1552566626-52f8b828add9",
+      "rating": 4.7,
+      "cuisine": "Chinese",
+      "deliveryTime": "30-45 min",
+      "minOrder": 15,
+      "featured": true,
+      "menu": []
+    }
+    // ... more restaurants
+  ],
+  "featuredDishes": [
+    {
+      "id": "f1",
+      "name": "Supreme Pizza",
+      "image": "https://images.unsplash.com/photo-1604382355076-af4b0eb60143",
+      "restaurant": "Pizza Palace",
+      "price": 24.99
+    },
+    {
+      "id": "f2",
+      "name": "Sushi Platter",
+      "image": "https://images.unsplash.com/photo-1579871494447-9811cf80d66c",
+      "restaurant": "Sushi Master",
+      "price": 32.99
+    }
+    // ... more featured dishes
+  ],
+  "cuisineTypes": [
+    {
+      "name": "Fast Food",
+      "image": "https://images.unsplash.com/photo-1551782450-a2132b4ba21d",
+      "count": 12
+    },
+    {
+      "name": "Chinese",
+      "image": "https://images.unsplash.com/photo-1525755662778-989d0524087e",
+      "count": 8
+    }
+    // ... more cuisine types
+  ]
+} 
