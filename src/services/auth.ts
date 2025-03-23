@@ -1,84 +1,98 @@
-import { api } from './api';
+import { AUTH_CONFIG } from "../config/auth.config";
 
 export interface User {
   id: string;
   name: string;
   email: string;
   phone: string;
-  addresses: Address[];
 }
 
-export interface Address {
-  id: string;
-  street: string;
-  city: string;
-  zipCode: string;
-  isDefault: boolean;
+interface AuthResponse {
+  token: string;
+  user: User;
 }
 
-export interface LoginCredentials {
-  email: string;
-  password: string;
-}
+// Simulated database
+const USERS_DB = [
+  {
+    id: "1",
+    name: "Test User",
+    email: "test@example.com",
+    // In real app, never store plain passwords
+    password: "password123",
+  },
+];
 
-export interface RegisterData {
-  name: string;
-  email: string;
-  password: string;
-  phone: string;
-}
+class AuthService {
+  private token: string | null = null;
 
-export const auth = {
-  async login(credentials: LoginCredentials) {
-    const response = await fetch(`${api.BASE_URL}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(credentials),
-    });
+  constructor() {
+    this.token = localStorage.getItem("token");
+  }
 
-    if (!response.ok) {
-      throw new Error('Invalid credentials');
+  async login(email: string, password: string): Promise<User> {
+    // Simulate API delay
+    await new Promise((resolve) => setTimeout(resolve, 800));
+
+    const user = USERS_DB.find(
+      (u) => u.email === email && u.password === password
+    );
+
+    if (!user) {
+      throw new Error("Invalid credentials");
     }
 
-    const data = await response.json();
-    localStorage.setItem('token', data.token);
-    return data.user as User;
-  },
+    // Create simple token
+    const token = btoa(`${user.id}:${Date.now()}`);
+    this.setToken(token);
 
-  async register(data: RegisterData) {
-    const response = await fetch(`${api.BASE_URL}/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
+    // Return user without password
+    const { password: _, ...userWithoutPassword } = user;
+    return userWithoutPassword;
+  }
 
-    if (!response.ok) {
-      throw new Error('Registration failed');
+  async register(
+    name: string, 
+    email: string, 
+    password: string,
+    phone: string
+  ): Promise<User> {
+    await new Promise((resolve) => setTimeout(resolve, 800));
+
+    if (USERS_DB.some((u) => u.email === email)) {
+      throw new Error("Email already exists");
     }
 
-    const userData = await response.json();
-    localStorage.setItem('token', userData.token);
-    return userData.user as User;
-  },
+    const newUser = {
+      id: String(USERS_DB.length + 1),
+      name,
+      email,
+      phone,
+      password,
+    };
 
-  async getCurrentUser() {
-    const token = localStorage.getItem('token');
-    if (!token) return null;
+    USERS_DB.push(newUser);
 
-    try {
-      const response = await fetch(`${api.BASE_URL}/auth/me`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+    const token = btoa(`${newUser.id}:${Date.now()}`);
+    this.setToken(token);
 
-      if (!response.ok) throw new Error();
-      return (await response.json()) as User;
-    } catch {
-      localStorage.removeItem('token');
-      return null;
-    }
-  },
+    const { password: _, ...userWithoutPassword } = newUser;
+    return userWithoutPassword;
+  }
 
   logout() {
-    localStorage.removeItem('token');
-  },
-}; 
+    this.token = null;
+    localStorage.removeItem("token");
+  }
+
+  isAuthenticated(): boolean {
+    return Boolean(this.token);
+  }
+
+  private setToken(token: string) {
+    this.token = token;
+    localStorage.setItem("token", token);
+  }
+}
+
+export const auth = new AuthService();

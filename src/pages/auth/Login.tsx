@@ -1,70 +1,95 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import Input from '../../components/common/Input';
-import Button from '../../components/common/Button';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import Input from "../../components/common/Input";
+import Button from "../../components/common/Button";
 
 export default function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    
+    setError("");
+    setLoading(true);
+
     try {
       await login(formData.email, formData.password);
-      navigate('/');
+      navigate("/");
     } catch (err) {
-      setError('Invalid email or password');
+      setError("Invalid email or password");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold text-center mb-6">Welcome Back</h1>
-        
-        {error && (
-          <div className="bg-red-50 text-red-500 p-3 rounded-lg mb-4">
-            {error}
-          </div>
-        )}
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gray-50">
+      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-sm">
+        <div>
+          <h2 className="text-3xl font-bold text-center">Welcome Back</h2>
+          <p className="mt-2 text-center text-gray-600">
+            Sign in to your account to continue
+          </p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          {error && (
+            <div className="bg-red-50 text-red-500 p-3 rounded-md text-sm">
+              {error}
+            </div>
+          )}
+
           <Input
             label="Email"
             type="email"
             value={formData.email}
-            onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+            onChange={(e) =>
+              setFormData({ ...formData, email: e.target.value })
+            }
             required
           />
-          
+
           <Input
             label="Password"
             type="password"
             value={formData.password}
-            onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
+            onChange={(e) =>
+              setFormData({ ...formData, password: e.target.value })
+            }
             required
           />
 
-          <Button type="submit" className="w-full">
-            Login
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? "Signing in..." : "Sign In"}
           </Button>
-        </form>
 
-        <p className="mt-4 text-center text-gray-600">
-          Don't have an account?{' '}
-          <Link to="/auth/register" className="text-primary hover:underline">
-            Sign up
-          </Link>
-        </p>
+          <div className="text-center text-sm">
+            <Link
+              to="/auth/forgot-password"
+              className="text-primary hover:text-primary-dark"
+            >
+              Forgot your password?
+            </Link>
+          </div>
+
+          <div className="text-center text-sm text-gray-600">
+            Don't have an account?{" "}
+            <Link
+              to="/auth/register"
+              className="text-primary hover:text-primary-dark"
+            >
+              Sign up
+            </Link>
+          </div>
+        </form>
       </div>
     </div>
   );
-} 
+}
