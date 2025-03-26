@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import RestaurantCard from '../components/RestaurantCard';
-import Input from '../components/common/Input';
+// import Input from '../components/common/Input';
 import Button from '../components/common/Button';
 import FeaturedCarousel from '../components/FeaturedCarousel';
 import { api, Restaurant, FeaturedDish, CuisineType } from '../services/api';
@@ -9,7 +9,7 @@ import LoadingSpinner from '../components/common/LoadingSpinner';
 import SearchBar from '../components/SearchBar';
 
 export default function Home() {
-  const [searchQuery, setSearchQuery] = useState('');
+  // const [searchQuery, setSearchQuery] = useState('');
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [featuredDishes, setFeaturedDishes] = useState<FeaturedDish[]>([]);
   const [cuisineTypes, setCuisineTypes] = useState<CuisineType[]>([]);

@@ -1,155 +1,237 @@
-import { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { auth, Address } from '../services/auth';
-import Button from '../components/common/Button';
-import Input from '../components/common/Input';
+import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import Button from "../components/common/Button";
+import {
+  UserCircleIcon,
+  ClockIcon,
+  MapPinIcon,
+  CogIcon,
+} from "@heroicons/react/24/outline";
 
 export default function Profile() {
-  const { user, updateUser } = useAuth();
-  const [editing, setEditing] = useState(false);
-  const [formData, setFormData] = useState({
-    name: user?.name || '',
-    phone: user?.phone || '',
-  });
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState<
+    "profile" | "orders" | "addresses" | "settings"
+  >("profile");
 
-  const [newAddress, setNewAddress] = useState<Partial<Address>>({
-    street: '',
-    city: '',
-    zipCode: '',
-  });
-  const [showAddressForm, setShowAddressForm] = useState(false);
+  if (!user) {
+    navigate("/auth/login");
+    return null;
+  }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const updatedUser = await auth.updateProfile(formData);
-      updateUser(updatedUser);
-      setEditing(false);
-    } catch (error) {
-      console.error('Failed to update profile:', error);
-    }
-  };
+  const tabs = [
+    { id: "profile", name: "Profile", icon: UserCircleIcon },
+    { id: "orders", name: "Orders", icon: ClockIcon },
+    { id: "addresses", name: "Addresses", icon: MapPinIcon },
+    { id: "settings", name: "Settings", icon: CogIcon },
+  ];
 
-  const handleAddAddress = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const updatedUser = await auth.addAddress(newAddress as Address);
-      updateUser(updatedUser);
-      setShowAddressForm(false);
-      setNewAddress({ street: '', city: '', zipCode: '' });
-    } catch (error) {
-      console.error('Failed to add address:', error);
-    }
-  };
+  // Mock data (replace with real data from your API)
+  const recentOrders = [
+    {
+      id: "1",
+      restaurant: "Burger House",
+      date: "2024-03-15",
+      total: 45.99,
+      status: "Delivered",
+    },
+    {
+      id: "2",
+      restaurant: "Pizza Palace",
+      date: "2024-03-10",
+      total: 32.5,
+      status: "Delivered",
+    },
+  ];
+
+  const addresses = [
+    {
+      id: "1",
+      type: "Home",
+      street: "123 Main St",
+      city: "Lagos",
+      isDefault: true,
+    },
+    {
+      id: "2",
+      type: "Work",
+      street: "456 Office Ave",
+      city: "Lagos",
+      isDefault: false,
+    },
+  ];
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-8">My Profile</h1>
-
-      <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold">Personal Information</h2>
-          <Button
-            variant="outline"
-            onClick={() => setEditing(!editing)}
-          >
-            {editing ? 'Cancel' : 'Edit'}
-          </Button>
-        </div>
-
-        {editing ? (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <Input
-              label="Name"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            />
-            <Input
-              label="Phone"
-              value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-            />
-            <Button type="submit">Save Changes</Button>
-          </form>
-        ) : (
-          <div className="space-y-2">
-            <p><span className="font-medium">Name:</span> {user?.name}</p>
-            <p><span className="font-medium">Email:</span> {user?.email}</p>
-            <p><span className="font-medium">Phone:</span> {user?.phone}</p>
-          </div>
-        )}
-      </div>
-
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold">Delivery Addresses</h2>
-          <Button
-            variant="outline"
-            onClick={() => setShowAddressForm(!showAddressForm)}
-          >
-            Add New Address
-          </Button>
-        </div>
-
-        {showAddressForm && (
-          <form onSubmit={handleAddAddress} className="space-y-4 mb-6">
-            <Input
-              label="Street Address"
-              value={newAddress.street}
-              onChange={(e) => setNewAddress({ ...newAddress, street: e.target.value })}
-            />
-            <div className="grid grid-cols-2 gap-4">
-              <Input
-                label="City"
-                value={newAddress.city}
-                onChange={(e) => setNewAddress({ ...newAddress, city: e.target.value })}
-              />
-              <Input
-                label="ZIP Code"
-                value={newAddress.zipCode}
-                onChange={(e) => setNewAddress({ ...newAddress, zipCode: e.target.value })}
-              />
-            </div>
-            <Button type="submit">Add Address</Button>
-          </form>
-        )}
-
-        <div className="space-y-4">
-          {user?.addresses.map((address) => (
-            <div
-              key={address.id}
-              className="border rounded-lg p-4 flex justify-between items-center"
-            >
-              <div>
-                <p>{address.street}</p>
-                <p className="text-gray-600">
-                  {address.city}, {address.zipCode}
-                </p>
+    <div className="max-w-6xl mx-auto px-4 py-8 mt-16">
+      <div className="flex flex-col md:flex-row gap-8">
+        {/* Sidebar */}
+        <div className="md:w-64 flex-shrink-0">
+          <div className="bg-white rounded-lg shadow-sm p-6 space-y-6">
+            <div className="text-center">
+              <div className="w-24 h-24 rounded-full bg-gray-200 mx-auto mb-4 flex items-center justify-center">
+                <UserCircleIcon className="w-16 h-16 text-gray-400" />
               </div>
-              <div className="flex gap-2">
-                {address.isDefault ? (
-                  <span className="text-primary text-sm">Default</span>
-                ) : (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => auth.setDefaultAddress(address.id)}
-                  >
-                    Set as Default
-                  </Button>
-                )}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => auth.deleteAddress(address.id)}
+              <h2 className="text-xl font-semibold">{user.name}</h2>
+              <p className="text-gray-500 text-sm">{user.email}</p>
+            </div>
+
+            <nav className="space-y-1">
+              {tabs.map(({ id, name, icon: Icon }) => (
+                <button
+                  key={id}
+                  onClick={() => setActiveTab(id as any)}
+                  className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg text-left ${
+                    activeTab === id
+                      ? "bg-primary text-white"
+                      : "text-gray-600 hover:bg-gray-50"
+                  }`}
                 >
-                  Delete
-                </Button>
+                  <Icon className="w-5 h-5" />
+                  {name}
+                </button>
+              ))}
+            </nav>
+
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => {
+                logout();
+                navigate("/");
+              }}
+            >
+              Sign Out
+            </Button>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="flex-1">
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            {activeTab === "profile" && (
+              <div className="space-y-6">
+                <h3 className="text-xl font-semibold">Profile Information</h3>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Name
+                    </label>
+                    <p className="mt-1 text-gray-900">{user.name}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Email
+                    </label>
+                    <p className="mt-1 text-gray-900">{user.email}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Phone
+                    </label>
+                    <p className="mt-1 text-gray-900">
+                      {user.phone || "Not provided"}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Member Since
+                    </label>
+                    <p className="mt-1 text-gray-900">March 2024</p>
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            )}
+
+            {activeTab === "orders" && (
+              <div className="space-y-6">
+                <h3 className="text-xl font-semibold">Recent Orders</h3>
+                <div className="space-y-4">
+                  {recentOrders.map((order) => (
+                    <div key={order.id} className="border rounded-lg p-4">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h4 className="font-medium">{order.restaurant}</h4>
+                          <p className="text-sm text-gray-500">{order.date}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-medium">
+                            ${order.total.toFixed(2)}
+                          </p>
+                          <span className="text-sm text-green-600">
+                            {order.status}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeTab === "addresses" && (
+              <div className="space-y-6">
+                <h3 className="text-xl font-semibold">Delivery Addresses</h3>
+                <div className="space-y-4">
+                  {addresses.map((address) => (
+                    <div key={address.id} className="border rounded-lg p-4">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h4 className="font-medium">{address.type}</h4>
+                            {address.isDefault && (
+                              <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+                                Default
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-sm text-gray-500">
+                            {address.street}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            {address.city}
+                          </p>
+                        </div>
+                        <Button variant="outline" size="sm">
+                          Edit
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                  <Button className="w-full">Add New Address</Button>
+                </div>
+              </div>
+            )}
+
+            {activeTab === "settings" && (
+              <div className="space-y-6">
+                <h3 className="text-xl font-semibold">Account Settings</h3>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between py-3 border-b">
+                    <div>
+                      <h4 className="font-medium">Email Notifications</h4>
+                      <p className="text-sm text-gray-500">
+                        Receive order updates and promotions
+                      </p>
+                    </div>
+                    <input type="checkbox" className="toggle" defaultChecked />
+                  </div>
+                  <div className="flex items-center justify-between py-3 border-b">
+                    <div>
+                      <h4 className="font-medium">SMS Notifications</h4>
+                      <p className="text-sm text-gray-500">
+                        Receive delivery updates via SMS
+                      </p>
+                    </div>
+                    <input type="checkbox" className="toggle" />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
   );
-} 
+}

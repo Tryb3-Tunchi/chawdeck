@@ -1,10 +1,9 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext';
-import { orders } from '../services/orders';
-import Input from '../components/common/Input';
-import Button from '../components/common/Button';
+import { useState } from "react";
+import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext";
+import { orders } from "../services/orders";
+import Input from "../components/common/Input";
+import Button from "../components/common/Button";
 
 interface DeliveryAddress {
   street: string;
@@ -14,17 +13,17 @@ interface DeliveryAddress {
 }
 
 export default function Checkout() {
-  const navigate = useNavigate();
   const { user } = useAuth();
-  const { items, total, clearCart } = useCart();
+  const { items, total } = useCart();
   const [loading, setLoading] = useState(false);
   const [address, setAddress] = useState<DeliveryAddress>({
-    street: '',
-    city: '',
-    zipCode: '',
-    instructions: '',
+    street: "",
+    city: "",
+    zipCode: "",
+    instructions: "",
   });
-  const [paymentMethod, setPaymentMethod] = useState<'card' | 'cash'>('card');
+  const [paymentMethod, setPaymentMethod] = useState<"card" | "cash">("card");
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,31 +37,22 @@ export default function Checkout() {
         paymentMethod,
       };
 
-      if (paymentMethod === 'card') {
-        // Initialize Paystack/Flutterwave payment
-        const paymentDetails = {
-          amount: total * 100, // Convert to kobo/cents
-          email: user.email,
-          currency: 'NGN',
-          // Add other required fields
-        };
+      const orderResponse = await orders.createOrder(orderDetails);
 
-        const payment = await orders.initiatePayment(paymentDetails);
-        
-        // Integrate with Paystack/Flutterwave SDK here
-        // On successful payment:
-        const order = await orders.createOrder(orderDetails);
-        clearCart();
-        navigate('/order-confirmation', { state: { order } });
-      } else {
-        // Cash on delivery
-        const order = await orders.createOrder(orderDetails);
-        clearCart();
-        navigate('/order-confirmation', { state: { order } });
-      }
+      const paymentDetails = {
+        amount: total,
+        email: user.email,
+        currency: "NGN",
+        orderId: orderResponse.id,
+      };
+
+      const paymentResponse = await orders.initiatePayment(paymentDetails);
+
+      // Redirect to payment gateway
+      window.location.href = paymentResponse.authorization_url;
     } catch (error) {
-      console.error('Checkout failed:', error);
-      // Handle error
+      console.error("Checkout failed:", error);
+      setError("Failed to process order");
     } finally {
       setLoading(false);
     }
@@ -80,27 +70,38 @@ export default function Checkout() {
             <Input
               label="Street Address"
               value={address.street}
-              onChange={(e) => setAddress(prev => ({ ...prev, street: e.target.value }))}
+              onChange={(e) =>
+                setAddress((prev) => ({ ...prev, street: e.target.value }))
+              }
               required
             />
             <div className="grid grid-cols-2 gap-4">
               <Input
                 label="City"
                 value={address.city}
-                onChange={(e) => setAddress(prev => ({ ...prev, city: e.target.value }))}
+                onChange={(e) =>
+                  setAddress((prev) => ({ ...prev, city: e.target.value }))
+                }
                 required
               />
               <Input
                 label="ZIP Code"
                 value={address.zipCode}
-                onChange={(e) => setAddress(prev => ({ ...prev, zipCode: e.target.value }))}
+                onChange={(e) =>
+                  setAddress((prev) => ({ ...prev, zipCode: e.target.value }))
+                }
                 required
               />
             </div>
             <Input
               label="Delivery Instructions (Optional)"
               value={address.instructions}
-              onChange={(e) => setAddress(prev => ({ ...prev, instructions: e.target.value }))}
+              onChange={(e) =>
+                setAddress((prev) => ({
+                  ...prev,
+                  instructions: e.target.value,
+                }))
+              }
               placeholder="E.g., Ring doorbell, call upon arrival..."
             />
           </div>
@@ -114,8 +115,8 @@ export default function Checkout() {
               <input
                 type="radio"
                 value="card"
-                checked={paymentMethod === 'card'}
-                onChange={(e) => setPaymentMethod(e.target.value as 'card')}
+                checked={paymentMethod === "card"}
+                onChange={(e) => setPaymentMethod(e.target.value as "card")}
                 className="text-primary"
               />
               <span>Credit/Debit Card</span>
@@ -124,8 +125,8 @@ export default function Checkout() {
               <input
                 type="radio"
                 value="cash"
-                checked={paymentMethod === 'cash'}
-                onChange={(e) => setPaymentMethod(e.target.value as 'cash')}
+                checked={paymentMethod === "cash"}
+                onChange={(e) => setPaymentMethod(e.target.value as "cash")}
                 className="text-primary"
               />
               <span>Cash on Delivery</span>
@@ -152,10 +153,19 @@ export default function Checkout() {
           </div>
         </section>
 
+        {error && (
+          <div
+            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+            role="alert"
+          >
+            {error}
+          </div>
+        )}
+
         <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? 'Processing...' : 'Place Order'}
+          {loading ? "Processing..." : "Place Order"}
         </Button>
       </form>
     </div>
   );
-} 
+}

@@ -166,7 +166,7 @@ export default function ScrollAwareHeader() {
                 TRYB3-CHAW
               </Link>
 
-              <div className="flex-1 max-w-md">
+              <div className="flex-1 hidden max-w-md">
                 <div className="relative">
                   <input
                     type="text"

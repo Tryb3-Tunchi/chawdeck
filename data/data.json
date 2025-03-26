@@ -1,0 +1,20 @@
+{
+  "restaurants": [
+    // ... existing restaurant data ...
+  ],
+  "featured_dishes": [
+    // ... existing featured dishes ...
+  ],
+  "cuisine_types": [
+    // ... existing cuisine types ...
+  ],
+  "users": [
+    {
+      "id": "1",
+      "name": "Test User",
+      "email": "test@example.com",
+      "password": "password123",
+      "phone": "+1234567890"
+    }
+  ]
+}

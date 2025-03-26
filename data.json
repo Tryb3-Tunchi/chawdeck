@@ -86,6 +86,71 @@
           "category": "Popular"
         }
       ]
+    },
+    {
+      "id": "4",
+      "name": "Mama's Kitchen",
+      "image": "https://images.unsplash.com/photo-1567360425618-1f9c9fdc5260",
+      "coverImage": "https://images.unsplash.com/photo-1576749872435-ff88a71c1ae2",
+      "rating": 4.8,
+      "cuisine": "Nigerian",
+      "deliveryTime": "35-50 min",
+      "minOrder": 15,
+      "featured": true,
+      "menu": [
+        {
+          "id": "n1",
+          "name": "Jollof Rice Special",
+          "description": "Smoky jollof rice served with grilled chicken and plantains",
+          "price": 18.99,
+          "image": "https://images.unsplash.com/photo-1567360425618-1f9c9fdc5260",
+          "category": "Popular"
+        },
+        {
+          "id": "n2",
+          "name": "Egusi Soup & Pounded Yam",
+          "description": "Traditional egusi soup with choice of meat and fresh pounded yam",
+          "price": 22.99,
+          "image": "https://example.com/egusi.jpg",
+          "category": "Soups"
+        },
+        {
+          "id": "n3",
+          "name": "Suya Platter",
+          "description": "Spicy grilled beef suya with onions and tomatoes",
+          "price": 16.99,
+          "image": "https://example.com/suya.jpg",
+          "category": "Grills"
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "name": "Drinks & More",
+      "image": "https://images.unsplash.com/photo-1551024709-8f23befc6f87",
+      "coverImage": "https://images.unsplash.com/photo-1470337458703-46ad1756a187",
+      "rating": 4.6,
+      "cuisine": "Beverages",
+      "deliveryTime": "20-30 min",
+      "minOrder": 10,
+      "menu": [
+        {
+          "id": "d1",
+          "name": "Chapman",
+          "description": "Nigerian special cocktail mix with fruits",
+          "price": 7.99,
+          "image": "https://example.com/chapman.jpg",
+          "category": "Cocktails"
+        },
+        {
+          "id": "d2",
+          "name": "Zobo",
+          "description": "Refreshing hibiscus drink",
+          "price": 4.99,
+          "image": "https://example.com/zobo.jpg",
+          "category": "Local Drinks"
+        }
+      ]
     }
   ],
   "featured_dishes": [
@@ -128,7 +193,7 @@
       "id": "2",
       "name": "Chinese",
       "image": "https://images.unsplash.com/photo-1525755662778-989d0524087e",
-      "count": 8
+      "count": 5
     },
     {
       "id": "3",
@@ -153,6 +218,18 @@
       "name": "Mexican",
       "image": "https://images.unsplash.com/photo-1565299585323-38d6b0865b47",
       "count": 7
+    },
+    {
+      "id": "7",
+      "name": "Nigerian",
+      "image": "https://images.unsplash.com/photo-1567360425618-1f9c9fdc5260",
+      "count": 8
+    },
+    {
+      "id": "8",
+      "name": "Beverages",
+      "image": "https://images.unsplash.com/photo-1551024709-8f23befc6f87",
+      "count": 4
     }
   ]
-} 
+}

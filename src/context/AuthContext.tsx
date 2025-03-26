@@ -1,11 +1,5 @@
 import { createContext, useContext, useState, ReactNode } from "react";
-import { auth } from "../services/auth";
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-}
+import { auth, User } from "../services/auth";
 
 interface AuthContextType {
   user: User | null;
@@ -25,8 +19,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
   const login = async (email: string, password: string) => {
-    // TODO: Implement actual login logic
-    setUser({ id: "1", name: "Test User", email });
+    try {
+      const user = await auth.login(email, password);
+      setUser(user);
+    } catch (error) {
+      console.error("Login failed:", error);
+      throw error;
+    }
   };
 
   const register = async (
@@ -35,8 +34,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     password: string,
     phone: string
   ) => {
-    const user = await auth.register(name, email, password, phone);
-    setUser(user);
+    try {
+      const user = await auth.register(name, email, password, phone);
+      setUser(user);
+    } catch (error) {
+      console.error("Registration failed:", error);
+      throw error;
+    }
   };
 
   const logout = () => {

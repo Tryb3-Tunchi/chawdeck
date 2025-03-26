@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:3001';
+export const BASE_URL = "http://localhost:3001";
 
 export interface Restaurant {
   id: string;
@@ -40,37 +40,38 @@ export interface CuisineType {
 }
 
 export const api = {
+  BASE_URL,
   async getRestaurants() {
-    const response = await fetch(`${API_BASE_URL}/restaurants`);
+    const response = await fetch(`${BASE_URL}/restaurants`);
     return response.json() as Promise<Restaurant[]>;
   },
 
   async getRestaurant(id: string) {
-    const response = await fetch(`${API_BASE_URL}/restaurants/${id}`);
+    const response = await fetch(`${BASE_URL}/restaurants/${id}`);
     return response.json() as Promise<Restaurant>;
   },
 
   async getFeaturedDishes() {
-    const response = await fetch(`${API_BASE_URL}/featured_dishes`);
+    const response = await fetch(`${BASE_URL}/featured_dishes`);
     return response.json() as Promise<FeaturedDish[]>;
   },
 
   async getCuisineTypes() {
-    const response = await fetch(`${API_BASE_URL}/cuisine_types`);
+    const response = await fetch(`${BASE_URL}/cuisine_types`);
     return response.json() as Promise<CuisineType[]>;
   },
 
   async searchRestaurants(query: string) {
     const response = await fetch(
-      `${API_BASE_URL}/restaurants?q=${encodeURIComponent(query)}`
+      `${BASE_URL}/restaurants?q=${encodeURIComponent(query)}`
     );
     return response.json() as Promise<Restaurant[]>;
   },
 
   async getRestaurantsByCuisine(cuisine: string) {
     const response = await fetch(
-      `${API_BASE_URL}/restaurants?cuisine=${encodeURIComponent(cuisine)}`
+      `${BASE_URL}/restaurants?cuisine=${encodeURIComponent(cuisine)}`
     );
     return response.json() as Promise<Restaurant[]>;
-  }
-}; 
+  },
+};
