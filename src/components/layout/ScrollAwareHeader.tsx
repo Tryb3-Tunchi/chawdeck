@@ -45,7 +45,7 @@ export default function ScrollAwareHeader() {
         }`}
       >
         {/* Mobile Header */}
-        <div className="md:hidden">
+        <div className="md:hidden space-y-10">
           <div className="px-4 h-16 flex items-center justify-between">
             {/* Left: Logo */}
             <Link to="/" className="text-xl font-bold text-primary">
