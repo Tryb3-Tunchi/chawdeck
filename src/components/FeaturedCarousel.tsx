@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import Button from './common/Button';
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import Button from "./common/Button";
 
 interface FeaturedDish {
   id: string;
@@ -26,15 +26,12 @@ export default function FeaturedCarousel({ dishes }: CarouselProps) {
 
   return (
     <div className="relative h-[500px] -mx-4 overflow-hidden">
-      <div 
+      <div
         className="flex transition-transform duration-500 h-full"
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
       >
-        {dishes.map((dish, index) => (
-          <div
-            key={dish.id}
-            className="w-full h-full flex-shrink-0 relative"
-          >
+        {dishes.map((dish) => (
+          <div key={dish.id} className="w-full h-full flex-shrink-0 relative">
             <img
               src={dish.image}
               alt={dish.name}
@@ -64,7 +61,7 @@ export default function FeaturedCarousel({ dishes }: CarouselProps) {
           <button
             key={index}
             className={`w-2 h-2 rounded-full transition-colors ${
-              index === currentIndex ? 'bg-white' : 'bg-white/50'
+              index === currentIndex ? "bg-white" : "bg-white/50"
             }`}
             onClick={() => setCurrentIndex(index)}
           />
@@ -72,4 +69,4 @@ export default function FeaturedCarousel({ dishes }: CarouselProps) {
       </div>
     </div>
   );
-} 
+}

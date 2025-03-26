@@ -68,4 +68,12 @@ export const orders = {
 
     return await response.json();
   },
+
+  async getOrder(orderId: string) {
+    const response = await fetch(`${BASE_URL}/orders/${orderId}`);
+    if (!response.ok) {
+      throw new Error("Order not found");
+    }
+    return response.json();
+  },
 };
