@@ -1,4 +1,4 @@
-export const BASE_URL = "http://localhost:3001";
+export const BASE_URL = "https://my-json-server.typicode.com/Tryb3-Tunchi/tryb3chaw/";
 
 export interface Restaurant {
   id: string;
